@@ -141,6 +141,13 @@ def getNewName(year, new_year, name, gender):
 
 
 def getAverageRank(name, gender):
+    """
+    return the average rank of a given name over the selected files
+
+    :param name:
+    :param gender:
+    :return:
+    """
     root = tk.Tk()
     root.withdraw()
     files = filedialog.askopenfilenames()
@@ -198,6 +205,14 @@ def yearOfHighestRank(name, gender):
 
 
 def birthsRankedHigher(year, name, gender):
+    """
+    Returns the total number of births with names ranked higher than the one given.
+
+    :param year:
+    :param name:
+    :param gender:
+    :return:
+    """
     curr_dir = os.path.dirname(__file__)
     file_path = curr_dir + "/CSV data/us_babynames_test/yob{}short.csv".format(year)
 
