@@ -25,7 +25,7 @@ def printNames():
             print(row[0])
 
 
-def totalBirths(path):
+def totalScore(path):
     """
     Reads the CSV file at location 'path' and prints out the number of boys and girls born
     along with the number of unique boy names and unique girl names.
@@ -54,7 +54,7 @@ def totalBirths(path):
     print("Total unique names: ", totalNames, '\n')
 
 
-def getName(year, rank, gender):
+def getID(year, rank, gender):
     """
     Returns the name with the given year, rank and gender. If there is a tie between two names, the first
     instance is returned.
@@ -66,9 +66,9 @@ def getName(year, rank, gender):
     :return:
     """
 
-    file = "yob{}short.csv".format(str(year))
+    file = "yob{}.csv".format(str(year))
     current_path = os.path.dirname(__file__)
-    file_path = current_path + "/CSV data/us_babynames_test/{}".format(file)
+    file_path = current_path + "/CSV data/us_babynames_by_year/yob{}.csv".format(file)
     name = "NO NAME"
 
     curr_rank = 0
@@ -97,9 +97,9 @@ def getRank(year, name, gender):
     :param gender:
     :return:
     """
-    file_name = "yob{}short.csv".format(year)
+    file_name = "yob{}.csv".format(year)
     curr_path = os.path.dirname(__file__)
-    abs_path = curr_path + "/CSV data/us_babynames_test/{}".format(file_name)
+    abs_path = curr_path + "/CSV data/us_babynames_by_year/yob{}.csv".format(file_name)
 
     last_count = 0
     rank = 0
@@ -122,7 +122,7 @@ def getRank(year, name, gender):
     return rank
 
 
-def getNewName(year, new_year, name, gender):
+def getNewID(year, new_year, name, gender):
     """
     This method takes a name and a year, and gets the popularity of that name in that year. It then gets the name
     with equal popularity in a different year and returns that name. Returns "NO NAME" if no match in popularity is
@@ -136,7 +136,7 @@ def getNewName(year, new_year, name, gender):
     :return:
     """
     rank = getRank(year, name, gender)
-    new_name = getName(new_year, rank, gender)
+    new_name = getID(new_year, rank, gender)
     return new_name
 
 
@@ -214,7 +214,7 @@ def birthsRankedHigher(year, name, gender):
     :return:
     """
     curr_dir = os.path.dirname(__file__)
-    file_path = curr_dir + "/CSV data/us_babynames_test/yob{}short.csv".format(year)
+    file_path = curr_dir + "/CSV data/us_babynames_by_year/yob{}.csv".format(year)
 
     rank = getRank(year, name, gender)
     births = 0
