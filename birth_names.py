@@ -1,7 +1,7 @@
 import tkinter as tk
-from tkinter import filedialog
 import os
 import csv
+import numpy as np
 
 
 def parseFileYear(file_name):
@@ -18,7 +18,7 @@ def printNames():
     root = tk.Tk()
     root.withdraw()
 
-    file_path = filedialog.askopenfilename()
+    file_path = tk.filedialog.askopenfilename()
     with open(file_path, 'r') as csvFile:
         reader = csv.reader(csvFile)
         for row in reader:
@@ -68,7 +68,7 @@ def getID(year, rank, gender):
 
     file = "yob{}.csv".format(str(year))
     current_path = os.path.dirname(__file__)
-    file_path = current_path + "/CSV data/us_babynames_by_year/yob{}.csv".format(file)
+    file_path = current_path + "/CSV data/us_babynames_by_year/{}".format(file)
     name = "NO NAME"
 
     curr_rank = 0
@@ -99,7 +99,7 @@ def getRank(year, name, gender):
     """
     file_name = "yob{}.csv".format(year)
     curr_path = os.path.dirname(__file__)
-    abs_path = curr_path + "/CSV data/us_babynames_by_year/yob{}.csv".format(file_name)
+    abs_path = curr_path + "/CSV data/us_babynames_by_year/{}".format(file_name)
 
     last_count = 0
     rank = 0
@@ -140,21 +140,31 @@ def getNewID(year, new_year, name, gender):
     return new_name
 
 
-def getAverageRank(name, gender):
+def getAverageRank(name, gender, select=True, filez=None):
     """
-    return the average rank of a given name over the selected files
+    return the average rank of a given name over the selected files. If using
+    this method in conjunction with others that are analyzing multiple CSV
+    files, it is prudent to use select=False, and pass an iterable containing
+    the absolute paths of the files being looked at. This will save you from
+    dealing with multiple pop-up file selection dialogues.
 
     :param name:
     :param gender:
+    :param select: default True. If True, pop up file selection dialogue.
+    If false, the files argument must not be empty.
+    :param files: default None. An iterable containing the absolute paths
+    to the CSV files being analyzed. This parameter is required if param
+    select is False.
     :return:
     """
-    root = tk.Tk()
-    root.withdraw()
-    files = filedialog.askopenfilenames()
+    if select:
+        files = getPaths()
+    else:
+        files = filez
 
     name_found = False
     rank_sum = 0
-    count = 0
+    count = len(files)
     for file in files:
         file_name = os.path.basename(file)
         year = parseFileYear(file_name)
@@ -162,14 +172,13 @@ def getAverageRank(name, gender):
         if rank != -1:
             name_found = True
             rank_sum += rank
-            count += 1
 
     if name_found:
         return rank_sum / count
     return -1
 
 
-def yearOfHighestRank(name, gender):
+def yearOfHighestRank(name, gender, select=True, filez=None):
     """
     This method finds the year of highest popularity of a given name. If there is a tie over multiple years,
     the method returns the first year at which the highest popularity occurred. If the name is not found in any
@@ -179,10 +188,10 @@ def yearOfHighestRank(name, gender):
     :param gender:
     :return:
     """
-    root = tk.Tk()
-    root.withdraw()
-
-    files = filedialog.askopenfilenames()
+    if select:
+        files = getPaths()
+    else:
+        files = filez
 
     highest_rank = None
     highest_year = None
@@ -191,7 +200,6 @@ def yearOfHighestRank(name, gender):
         file_name = os.path.basename(file)
         year = parseFileYear(file_name)
         curr_rank = getRank(year, name, gender)
-        print("{} is ranked {} in {}".format(name, curr_rank, year))
         if highest_rank is None:
             highest_rank = curr_rank
             highest_year = year
@@ -229,3 +237,34 @@ def birthsRankedHigher(year, name, gender):
                     break
 
     return births
+
+def getAllRanks(name, gender, files):
+    """
+    Returns a list of tuples containing the year and rank pairs. Useful for plotting visualizations
+
+    :param name:
+    :param gender:
+    :param files:
+    :return:
+    """
+    dim = len(files)
+    data = np.zeros((dim, 2), dtype=int)
+    for i, file in enumerate(files):
+        file = os.path.basename(file)
+        year = parseFileYear(file)
+        rank = getRank(year, name, gender)
+        if rank == -1: # clean -1 from data (case of name not found in file)
+            rank = 0
+        data[i] = year, rank
+
+
+    return data
+
+def getPaths():
+    root = tk.Tk()
+    root.withdraw()
+    return tk.filedialog.askopenfilenames()
+
+# ave = getAverageRank("Liam", "M")
+# print(ave)
+# highest = yearOfHighestRank("Liam", "M")
