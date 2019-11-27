@@ -5,11 +5,11 @@ import numpy as np
 
 
 def parseFileYear(file_name):
-    '''
+    """
 
     :param file_name: file name in the format yobXXXX.csv where XXXX is the four digit year.
     :return: the year
-    '''
+    """
     return file_name[3:7]
 
 
@@ -297,4 +297,3 @@ def getAllScores(name, gender, files):
         score_data[i] = score
 
     return year_data, score_data
-
