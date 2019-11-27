@@ -88,6 +88,19 @@ def getID(year, rank, gender):
     return name
 
 
+def getScore(year, name, gender):
+    file_name = "yob{}.csv".format(year)
+    curr_path = os.path.dirname(__file__)
+    abs_path = curr_path + "/CSV data/us_babynames_by_year/{}".format(file_name)
+
+    with open(abs_path, 'r') as CSVdat:
+        for row in csv.reader(CSVdat):
+            if row[1] == gender and row[0] == name:
+                return row[2]
+
+    return -1
+
+
 def getRank(year, name, gender):
     """
     This method takes a year, name and gender and returns the rank of that name in the given year. If the name does not
@@ -240,7 +253,7 @@ def birthsRankedHigher(year, name, gender):
 
 def getAllRanks(name, gender, files):
     """
-    Returns a list of tuples containing the year and rank pairs. Useful for plotting visualizations
+    Returns a numpy 2-D array containing the year and rank pairs. Useful for plotting visualizations
 
     :param name:
     :param gender:
@@ -248,23 +261,35 @@ def getAllRanks(name, gender, files):
     :return:
     """
     dim = len(files)
-    data = np.zeros((dim, 2), dtype=int)
+    year_data = np.zeros(dim, dtype=int)
+    rank_data = np.zeros(dim, dtype=int)
     for i, file in enumerate(files):
-        file = os.path.basename(file)
-        year = parseFileYear(file)
+        file_name = os.path.basename(file)
+        year = parseFileYear(file_name)
         rank = getRank(year, name, gender)
         if rank == -1: # clean -1 from data (case of name not found in file)
             rank = 0
-        data[i] = year, rank
+        year_data[i] = year
+        rank_data[i] = rank
 
+    return year_data, rank_data
 
-    return data
 
 def getPaths():
     root = tk.Tk()
     root.withdraw()
     return tk.filedialog.askopenfilenames()
 
-# ave = getAverageRank("Liam", "M")
-# print(ave)
-# highest = yearOfHighestRank("Liam", "M")
+
+def getAllScores(name, gender, files):
+    dim = len(files)
+    year_data = np.zeros(dim, dtype=int)
+    score_data = np.zeros(dim, dtype=int)
+    for i, file in enumerate(files):
+        year = parseFileYear(os.path.basename(file))
+        score = getScore(year, name, gender)
+        year_data[i] = year
+        score_data[i] = score
+
+    return year_data, score_data
+
