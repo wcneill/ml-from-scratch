@@ -6,9 +6,11 @@ def myPlotter(ax, data1, data2, param_dict):
     out = ax.plot(data1, data2, **param_dict)
     return out
 
+
 def plotRankAndScores(name, gender):
 
     files = bn.getPaths()
+    print(files)
     x1, y1 = bn.getAllRanks(name, gender, files)
     x2, y2 = bn.getAllScores(name, gender, files)
     ave = bn.getAverageRank(name, gender, select=False, filez=files)
@@ -17,7 +19,7 @@ def plotRankAndScores(name, gender):
     # myPlotter(ax1, x1, y1, {'linestyle': '-.', 'color': 'red'})
     # myPlotter(ax2, x2, y2, {'linestyle': '--'})
 
-    fig2, (ax3, ax4) = plt.subplots(2, 1, sharex=True, figsize=(10,10))
+    fig2, (ax3, ax4) = plt.subplots(2, 1, sharex='all', figsize=(10, 10))
     plt.xlabel("Year")
     ax3.plot(x1, y1, 'b')
     ax3.set_ylabel("Rank")
@@ -29,6 +31,7 @@ def plotRankAndScores(name, gender):
     ax4.legend()
     plt.suptitle("Name Rank and Number of Births by Year")
     plt.show()
+
 
 if __name__ == '__main__':
     plotRankAndScores("Wesley", "M")

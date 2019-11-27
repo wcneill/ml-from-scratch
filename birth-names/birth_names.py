@@ -5,6 +5,11 @@ import numpy as np
 
 
 def parseFileYear(file_name):
+    '''
+
+    :param file_name: file name in the format yobXXXX.csv where XXXX is the four digit year.
+    :return: the year
+    '''
     return file_name[3:7]
 
 
@@ -68,7 +73,7 @@ def getID(year, rank, gender):
 
     file = "yob{}.csv".format(str(year))
     current_path = os.path.dirname(__file__)
-    file_path = current_path + "/CSV data/us_babynames_by_year/{}".format(file)
+    file_path = current_path + "/us_babynames_by_year/{}".format(file)
     name = "NO NAME"
 
     curr_rank = 0
@@ -91,7 +96,7 @@ def getID(year, rank, gender):
 def getScore(year, name, gender):
     file_name = "yob{}.csv".format(year)
     curr_path = os.path.dirname(__file__)
-    abs_path = curr_path + "/CSV data/us_babynames_by_year/{}".format(file_name)
+    abs_path = curr_path + "/us_babynames_by_year/{}".format(file_name)
 
     with open(abs_path, 'r') as CSVdat:
         for row in csv.reader(CSVdat):
@@ -112,7 +117,7 @@ def getRank(year, name, gender):
     """
     file_name = "yob{}.csv".format(year)
     curr_path = os.path.dirname(__file__)
-    abs_path = curr_path + "/CSV data/us_babynames_by_year/{}".format(file_name)
+    abs_path = curr_path + "/us_babynames_by_year/{}".format(file_name)
 
     last_count = 0
     rank = 0
@@ -235,7 +240,7 @@ def birthsRankedHigher(year, name, gender):
     :return:
     """
     curr_dir = os.path.dirname(__file__)
-    file_path = curr_dir + "/CSV data/us_babynames_by_year/yob{}.csv".format(year)
+    file_path = curr_dir + "/us_babynames_by_year/yob{}.csv".format(year)
 
     rank = getRank(year, name, gender)
     births = 0
