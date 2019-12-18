@@ -6,6 +6,7 @@ import numpy as np
 
 def parseFileYear(file_name):
     """
+    Parses the year from a file name which is pre-formatted as detailed below.
 
     :param file_name: file name in the format yobXXXX.csv where XXXX is the four digit year.
     :return: the year
@@ -106,6 +107,20 @@ def getScore(year, name, gender):
     return -1
 
 
+def getLastPlace(gender, year):
+    lastPlace = 0
+    file_name = "yob{}".format(year)
+    curr_path = os.path.dirname(__file__)
+    abs_path = curr_path + "/us_babynames_by_year/{}".format(file_name)
+
+    with open(abs_path, 'r') as csvDat:
+        for row in csv.reader(csvDat):
+            if row[1] == gender:
+                lastPlace += 1
+
+    return lastPlace
+
+
 def getRank(year, name, gender):
     """
     This method takes a year, name and gender and returns the rank of that name in the given year. If the name does not
@@ -122,6 +137,7 @@ def getRank(year, name, gender):
     last_count = 0
     rank = 0
     name_found = False
+
     with open(abs_path, 'r') as CSVdat:
         for row in csv.reader(CSVdat):
             if row[1] == gender:
@@ -170,7 +186,7 @@ def getAverageRank(name, gender, select=True, filez=None):
     :param gender:
     :param select: default True. If True, pop up file selection dialogue.
     If false, the files argument must not be empty.
-    :param files: default None. An iterable containing the absolute paths
+    :param filez: default None. An iterable containing the absolute paths
     to the CSV files being analyzed. This parameter is required if param
     select is False.
     :return:
@@ -204,6 +220,10 @@ def yearOfHighestRank(name, gender, select=True, filez=None):
 
     :param name:
     :param gender:
+    :param select: Boolean; If this parameter is set to True (default) files will be selected
+        by the user via a file dialogue.
+    :param filez: An iterable containing the file names. This argument is required
+        if the select parameter is false.
     :return:
     """
     if select:
@@ -255,6 +275,7 @@ def birthsRankedHigher(year, name, gender):
                     break
 
     return births
+
 
 def getAllRanks(name, gender, files):
     """
