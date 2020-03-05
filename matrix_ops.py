@@ -70,12 +70,6 @@ def rot90ccw(M):
     return final
 
 
-# element wise sum of two vectors
-
-
-# element wise difference of two vectors.
-
-
 if __name__ == '__main__':
     # create a new ndarray from a nested list
     A = [[1, 2, 3],
