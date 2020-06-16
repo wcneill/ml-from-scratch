@@ -1,9 +1,6 @@
 import numpy as np
 from scipy.special import expit
 import matplotlib.pyplot as plt
-import seaborn as sns
-import pandas as pd
-from sklearn import model_selection
 from operator import add, sub
 
 
@@ -14,7 +11,7 @@ class NN(object):
         self.n_layers = len(n_nodes)
         self.weights, self.bias = self.init_weights()
 
-    def train(self, X, y, lr, epochs=100, batch_size=1):
+    def train(self, X, y, lr=1, epochs=100, batch_size=1):
         """
         Train the neural network using stochastic gradient descent to iteratively update weights and biases.
         :param X: Predictor variable matrix in, where variables are columns and samples are rows.
@@ -43,7 +40,9 @@ class NN(object):
             y_hat = self.feed_forward(X)
             errors.append(self.cross_entropy_ave(y, y_hat))
 
-        plt.title('Loss Curve')
+        plt.title('Train Loss Curve')
+        plt.xlabel('Epochs')
+        plt.ylabel('Cross Entropy')
         plt.plot(errors)
         plt.show()
 
@@ -110,20 +109,20 @@ class NN(object):
 
     def activate_logistic(self, X, weights, bias):
         """
-        Apply sigmoid activation function to weighted sum of X
+        Apply sigmoid activation function to weighted sum  WX + b
         """
         return expit(weights @ X + bias)
 
     def activate_softmax(self, X, weights, bias):
-        Z = weights @ X + b
-        return np.exp(Z[i]) / np.exp(Z).sum()
+        Z = weights @ X + bias
+        return np.exp(Z) / np.exp(Z).sum()
 
     def sigmoid_prime(self, X):
         return expit(X) * (1 - expit(X))
 
     # cross entropy loss derivative wrt final activation layer
     def cost_derivative(self, y, y_hat):
-        return (y_hat - y) / (1e7 + y_hat * (1 - y_hat))
+        return (y_hat - y) / (1e-14 + y_hat * (1 - y_hat))
 
     def init_weights(self):
         weights = np.array([np.random.randn(m, n) for m, n in zip(self.n_nodes[1:], self.n_nodes[:-1])])
@@ -138,8 +137,6 @@ class NN(object):
 
     def cross_entropy_ave(self, y, y_hat):
         return (-y * np.log(y_hat) - (1 - y) * np.log(1 - y_hat)).mean()
-
-    # ------------------------------------
 
 
 if __name__ == '__main__': pass
