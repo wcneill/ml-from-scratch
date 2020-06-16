@@ -14,14 +14,51 @@ class NN(object):
         self.n_layers = len(n_nodes)
         self.weights, self.bias = self.init_weights()
 
+    def train(self, X, y, lr, epochs=100, batch_size=1):
+        """
+        Train the neural network using stochastic gradient descent to iteratively update weights and biases.
+        :param X: Predictor variable matrix in, where variables are columns and samples are rows.
+        :param y: Target variable vector.
+        :param lr: Learning Rate.
+        :param epochs: Number of views of entire training data set that the net will see.
+        :param batch_size: number of batches per epoch.
+        :return:
+        """
+        N = len(X)
+        errors = []
+
+        for e in np.arange(epochs):
+            X, y = self.shuffle_data(X, y)
+
+            X_batches = np.array(
+                [X[k:k + batch_size]
+                 for k in np.arange(0, N, batch_size)])
+            y_batches = np.array(
+                [y[k:k + batch_size]
+                 for k in np.arange(0, N, batch_size)])
+
+            for xb, yb in zip(X_batches, y_batches):
+                self.update(xb, yb, lr)
+
+            y_hat = self.feed_forward(X)
+            errors.append(self.cross_entropy_ave(y, y_hat))
+
+        plt.title('Loss Curve')
+        plt.plot(errors)
+        plt.show()
+
+
     def feed_forward(self, X, train=False):
-        x = np.atleast_2d(X).T
+        """
+        Get probabilities of classifications based on predictor matrix X, current weights and biases.
+        """
+        a = np.atleast_2d(X).T
         N = len(self.n_nodes)
         iters = np.arange(1, N)
-        activations = [x]
+        activations = [a]
         zs = []
         for i, b, w in zip(iters, self.bias, self.weights):
-            a = self.activate_logistic(activations[i - 1], w, b)
+            a = self.activate_logistic(a, w, b)
             if train:
                 activations.append(a)
                 zs.append(w @ activations[i - 1] + b)
@@ -31,8 +68,11 @@ class NN(object):
         return a
 
     def back_prop(self, X, Y, debug=False):
-        del_w = [np.zeros(w.shape) for w in self.weights]
-        del_b = [np.zeros(b.shape) for b in self.bias]
+        """
+        Back propogate error for use in gradient descent.
+        """
+        del_w = np.array([np.zeros(w.shape) for w in self.weights])
+        del_b = np.array([np.zeros(b.shape) for b in self.bias])
 
         # feed forward:
         A, Z = self.feed_forward(X, train=True)
@@ -43,7 +83,7 @@ class NN(object):
         del_b[-1] = delta_l
 
         # back propagate:
-        for i in np.arange(2, self.n_layers):
+        for i in np.arange(2, len(self.n_nodes)):
             sp = self.sigmoid_prime(Z[-i])
             delta_l = (self.weights[-i + 1].T @ delta_l) * sp
             del_b[-i] = delta_l
@@ -52,20 +92,26 @@ class NN(object):
         return del_w, del_b
 
     # helper functions --------------------
-    def update(self, mini_batch, lr):
-        N = len(mini_batch)
-        nabla_b = [np.zeros(b.shape) for b in self.bias]
-        nabla_w = [np.zeros(w.shape) for w in self.weights]
+    def update(self, X, Y, lr):
+        """
+        Update weights and biases based on back propagated error.
+        """
+        N = len(X)
+        nabla_b = np.array([np.zeros(b.shape) for b in self.bias])
+        nabla_w = np.array([np.zeros(w.shape) for w in self.weights])
 
-        for x, y in mini_batch:
+        for x, y in zip(X, Y):
             delta_dw, delta_db = self.back_prop(x, y)
-            nabla_w = list(map(add, nabla_w, delta_dw))
-            nabla_b = list(map(add, nabla_b, delta_db))
+            nabla_w += delta_dw
+            nabla_b += delta_db
 
-        self.weights = list(map(sub, self.weights, map(lambda x: x / N, nabla_w)))
-        self.bias = list(map(sub, self.bias, map(lambda x: x / N, nabla_b)))
+        self.weights -= lr * np.array(list(map(lambda x: x / N, nabla_w)))
+        self.bias -= lr * np.array(list(map(lambda x: x / N, nabla_b)))
 
     def activate_logistic(self, X, weights, bias):
+        """
+        Apply sigmoid activation function to weighted sum of X
+        """
         return expit(weights @ X + bias)
 
     def activate_softmax(self, X, weights, bias):
@@ -80,19 +126,20 @@ class NN(object):
         return (y_hat - y) / (1e7 + y_hat * (1 - y_hat))
 
     def init_weights(self):
-        weights = [np.random.randn(m, n) for m, n in zip(self.n_nodes[1:], self.n_nodes[:-1])]
-        bias = [np.zeros(m).reshape(-1, 1) for m in self.n_nodes[1:]]
+        weights = np.array([np.random.randn(m, n) for m, n in zip(self.n_nodes[1:], self.n_nodes[:-1])])
+        bias = np.array([np.zeros(m).reshape(-1, 1) for m in self.n_nodes[1:]])
         return weights, bias
+
+    def shuffle_data(self, X, y):
+        N = len(X)
+        idx = np.arange(N)
+        np.random.shuffle(idx)
+        return X[idx], y[idx]
+
+    def cross_entropy_ave(self, y, y_hat):
+        return (-y * np.log(y_hat) - (1 - y) * np.log(1 - y_hat)).mean()
+
     # ------------------------------------
 
 
-if __name__ == '__main__':
-
-    net = NN((4, 3, 2))
-    # for w in net.weights:
-    #     print(w, '\n')
-    # print('-------------------------')
-    # for b in net.bias:
-    #     print(b, '\n')
-    x = np.array([1, 2, 3, 4])
-    print('\n', net.feed_foward(x))
+if __name__ == '__main__': pass
