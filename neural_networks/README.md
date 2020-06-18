@@ -7,3 +7,4 @@
 Additionally this directory contains the following subdirectories:
 
 1. __learning pytorch__: A collection of jupyter notebooks that iteratively work through the basics of PyTorch. The first notebook is a primer on the Tensor data structure, and each follow on notebook builds on the previous in order to build and train neural networks in the later notebooks. 
+2. __cross-entropy-gradient-descent__: Some from-scratch examples of gradient descent and back propagation for single layer networks. 
