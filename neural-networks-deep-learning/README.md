@@ -1,5 +1,8 @@
-# Deep Learning Directory
-This folder contains a from-scratch DNN class written entirely in NumPy. This was a primer designed to get me familiar with how neural networks operate from a ground zero mathematical standpoint. 
+# Deep Learning Directory Files:
+
+1. __nn.py__ A from-scratch deep neural network class written entirely in Numpy. This class was written in an effort to understand the math behind neural networks from the ground up. 
+
+2. __based_sequential.py__ A small extension of `torch.nn.Sequential` for ease of use in generating and training sequential models for the feed forward process. Its `__init__` simply takes a tuple containing as elements the number of nodes at each desired layer. It then generates and registers ReLU modules for the inner layers and a log softmax activation for the final layer.  
 
 Additionally this directory contains the following subdirectories:
 
