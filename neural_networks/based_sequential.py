@@ -36,27 +36,30 @@ class LSequential(nn.Sequential):
 
         return modules
 
-    def train(self, trainloader, epochs, plot_loss=False):
+    def train(self, trainloader, epochs, optimizer=optim.Adam, lr=0.01, criterion=nn.NLLLoss(), plot_loss=False):
         """
         Train network parameters for given number of epochs.
+
+
         :param trainloader: a DataLoader object containing training variables and targets.
         :param epochs: Number of times the network will view the entire dataset
+        :param optimizer: Learning method. Default optim.Adam
+        :param lr: Learning Rate. Default 0.01
+        :param criterion: Loss function. defualt nn.NLLLoss,
         :param plot_loss: Set to True for a plot of training loss vs epochs.
         :return:
         """
 
-        criterion = nn.NLLLoss()
-        optimizer = optim.Adam(self.parameters(), lr=0.003)
+        opt = optimizer(self.parameters(), lr=lr)
         epoch_error = []
         for e in range(epochs):
             running_loss = 0
             for x, y in trainloader:
                 x = x.view(x.shape[0], -1)
-                optimizer.zero_grad()
-                out = self.forward(x)
-                loss = criterion(out, y)
+                opt.zero_grad()
+                loss = criterion(self(x), y)
                 loss.backward()
-                optimizer.step()
+                opt.step()
                 running_loss += loss.item()
             epoch_error.append(running_loss / len(trainloader))
 
