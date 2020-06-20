@@ -14,13 +14,12 @@ class LSequential(nn.Sequential):
 
     The class also includes training, loss plotting, and model saving functionality.
 
-    Args:
-        architecture: A tuple. Each element is the number of nodes desired for that layer.
-        activation:  A tuple. Describes the naming convention and activation function of each internal layer.
-            Default ("RelU", nn.ReLU())
-        out: A Tuple. Same as activation parameter, except only applied to the output layer.
-            Default ("lsmax", nn.LogSoftmax(dim=1)), do=0.2)
-        do: Desired dropout rate. Default 0.2
+    :param architecture: A tuple. Each element is the number of nodes desired for that layer.
+    :param activation:  A tuple. Describes the naming convention and activation function of each internal layer.
+        Default ("RelU", nn.ReLU())
+    :param out: A Tuple. Same as activation parameter, except only applied to the output layer.
+        Default ("lsmax", nn.LogSoftmax(dim=1)), do=0.2)
+    :param do: Desired dropout rate. Default 0.2
     """
 
     def __init__(self, architecture, activation=("RelU", nn.ReLU()), out=("lsmax", nn.LogSoftmax(dim=1)), do=0.2):
@@ -100,7 +99,7 @@ class LSequential(nn.Sequential):
 
     def plot_loss(self):
         """
-        Plot training loss per epoch. Will also plot validation loss if a validation set was included.
+        Plot training loss per epoch. Will also plot validation loss if a validation set was included during training.
         """
         if self.valid_loss:
             plt.plot(self.valid_loss, label='Validation Loss')
@@ -117,7 +116,6 @@ class LSequential(nn.Sequential):
 
 
 if __name__ == '__main__':
-
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
     trainset = datasets.FashionMNIST('~/.pytorch/F_MNIST_data/', download=True, train=True, transform=transform)
     testset = datasets.FashionMNIST('~/.pytorch/F_MNIST_data/', download=True, train=False, transform=transform)
@@ -126,7 +124,7 @@ if __name__ == '__main__':
 
     layers = (784, 256, 128, 64, 10)
     model = LSequential(layers)
-    model.train_model(trainloader, 1, testload=testloader)
+    model.train_model(trainloader, 15, testload=testloader)
     model.plot_loss()
     print(model)
     model.save('test_save.pth')
