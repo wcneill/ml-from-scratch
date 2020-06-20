@@ -14,44 +14,46 @@ class LSequential(nn.Sequential):
 
     All other behavior should match that of `torch.nn.Sequential`
     """
-    def __init__(self, layers):
-        self.layers = layers
-        super().__init__(self.init_modules(layers))
+    def __init__(self, architecture, activation=("RelU", nn.ReLU()), out=("lsmax", nn.LogSoftmax(dim=1)), do=0.2):
+        self.layers = architecture
+        super().__init__(self.init_modules(architecture, activation, out, do))
 
-    def init_modules(self, layers):
+    def init_modules(self, arch, activation, out, dropout):
         """
         A helper method that creates sequential modules and adds them to an `OrderedDict` object for passing
         to the super class `nn.Sequential`
-        :param layers: Tuple where each element is the number of nodes in the corresponding layer
+        :param arch: Tuple where each element is the number of nodes in the corresponding layer
+        :param activation: Default nn.ReLU(). This activation will be used for each internal layer, but not
+            the output layer.
+        :param out: Default nn.LogSoftmax. Output layer activation.
+        :param dropout: Default 0.2, the dropout rate.
         :return: OrderedDict containing activation modules for passing to `nn.sequential`
         """
-        n_layers = len(layers)
+        n_layers = len(arch)
         modules = OrderedDict()
+        a_name = activation[0]
+        o_name = out[0]
 
         for i in range(n_layers - 2):
             modules[f'fc{i}'] = nn.Linear(layers[i], layers[i + 1])
-            modules[f'ReLu{i}'] = nn.ReLU()
-            modules[f'drop{i}'] = nn.Dropout(p=0.2)
+            modules[f'{a_name}{i}'] = activation[1]
+            modules[f'drop{i}'] = nn.Dropout(p=dropout)
         modules['fc_out'] = nn.Linear(layers[-2], layers[-1])
-        modules['smax_out'] = nn.LogSoftmax(dim=1)
+        modules[f'{o_name}'] = out[1]
 
         return modules
 
-        return modules
-
-    def train_model(self, trainload, epochs, criterion=nn.NLLLoss(), optimizer=optim.Adam, lr=0.003, do=.2, testload=None):
+    def train_model(self, trainload, epochs, criterion=nn.NLLLoss(), optimizer=optim.Adam, lr=0.003, testload=None):
         """
         Train network parameters for given number of epochs.
 
         :param trainload: a DataLoader object containing training variables and targets used for training.
         :param testload: Optional. a DataLoader containing the validation set. If included, both training and
             validation loss will be tracked and can be plotted using model.plot_loss().
-        :param epochs: Number of times the network will view the entire dataset
+        :param epochs: Number of times the network will view the entire data set
         :param optimizer: Learning method. Default optim.Adam
         :param lr: Learning Rate. Default 0.003
-        :param do: Dropout rate. Default 0.2
-        :param criterion: Loss function. defualt nn.NLLLoss,
-        :param plot_loss: Set to True for a plot of training loss vs epochs.
+        :param criterion: Loss function. Default nn.NLLLoss,
         :return:
         """
         opt = optimizer(self.parameters(), lr)
@@ -117,10 +119,9 @@ if __name__ == '__main__':
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)
     testloader = torch.utils.data.DataLoader(testset, batch_size=64, shuffle=True)
 
-
     layers = (784, 256, 128, 64, 10)
     model = LSequential(layers)
-    model.train_model(trainloader, 2, testload=testloader)
+    model.train_model(trainloader, 5, testload=testloader)
     model.plot_loss()
-
+    print(model)
     model.save('test_save.pth')
