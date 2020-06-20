@@ -9,10 +9,10 @@ class LSequential(nn.Sequential):
     """
     A Small extension for ease of use of PyTorch's nn.Sequential model. Rather than define each layer's
     activations one at a time, the model is passed a tuple on initialization. The tuple contains the number of
-    nodes desired at each layer. The model is then automatically initialized with ReLU activations at each inner
-    layer and a log softmax activation at the final layer.
+    nodes desired at each layer. The module pipeline is automatically generated from this tuple, with additional
+    optional arguments allowing for customization of internal and output layer activations as well as dropout.
 
-    All other behavior should match that of `torch.nn.Sequential`
+    The class also includes training, loss plotting, and model saving functionality.
     """
     def __init__(self, architecture, activation=("RelU", nn.ReLU()), out=("lsmax", nn.LogSoftmax(dim=1)), do=0.2):
         self.layers = architecture
