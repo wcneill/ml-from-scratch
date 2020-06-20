@@ -13,20 +13,25 @@ class LSequential(nn.Sequential):
     optional arguments allowing for customization of internal and output layer activations as well as dropout.
 
     The class also includes training, loss plotting, and model saving functionality.
+
+    Args:
+        architecture: A tuple. Each element is the number of nodes desired for that layer.
+        activation:  A tuple. Describes the naming convention and activation function of each internal layer.
+            Default ("RelU", nn.ReLU())
+        out: A Tuple. Same as activation parameter, except only applied to the output layer.
+            Default ("lsmax", nn.LogSoftmax(dim=1)), do=0.2)
+        do: Desired dropout rate. Default 0.2
     """
+
     def __init__(self, architecture, activation=("RelU", nn.ReLU()), out=("lsmax", nn.LogSoftmax(dim=1)), do=0.2):
         self.layers = architecture
         super().__init__(self.init_modules(architecture, activation, out, do))
 
     def init_modules(self, arch, activation, out, dropout):
         """
-        A helper method that creates sequential modules and adds them to an `OrderedDict` object for passing
-        to the super class `nn.Sequential`
-        :param arch: Tuple where each element is the number of nodes in the corresponding layer
-        :param activation: Default nn.ReLU(). This activation will be used for each internal layer, but not
-            the output layer.
-        :param out: Default nn.LogSoftmax. Output layer activation.
-        :param dropout: Default 0.2, the dropout rate.
+        A helper method that returns an OrderedDict of modules for passing to the super class `nn.Sequential` for
+        initialization based on desired network architecture and layer activations.
+
         :return: OrderedDict containing activation modules for passing to `nn.sequential`
         """
         n_layers = len(arch)
@@ -121,7 +126,7 @@ if __name__ == '__main__':
 
     layers = (784, 256, 128, 64, 10)
     model = LSequential(layers)
-    model.train_model(trainloader, 5, testload=testloader)
+    model.train_model(trainloader, 1, testload=testloader)
     model.plot_loss()
     print(model)
     model.save('test_save.pth')
