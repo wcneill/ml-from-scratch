@@ -4,6 +4,7 @@ from torchvision import datasets, transforms
 from collections import OrderedDict
 import matplotlib.pyplot as plt
 
+
 class LSequential(nn.Sequential):
     """
     A Small extension for ease of use of PyTorch's nn.Sequential model. Rather than define each layer's
@@ -72,7 +73,7 @@ class LSequential(nn.Sequential):
                 opt.step()
                 running_tl += loss.item()
 
-            if testload != None:
+            if testload is not None:
                 self.eval()
                 with torch.no_grad():
                     for x, y in testload:
@@ -106,6 +107,7 @@ class LSequential(nn.Sequential):
             'state_dict': self.state_dict()
         }
         torch.save(checkpoint, filepath)
+
 
 if __name__ == '__main__':
 
