@@ -1,7 +1,8 @@
 # data-science-at-home
 A repository for experimenting with processing, visualizing, analyzing and predicting. 
 
-1. __Textbook__ - A set of Jupyter Notebooks containing detailed and organized notes on Machine Learning and Statistics, written as I learn. 
-2. __Linear Algebra__ - PCA and other basic linear algebra practice
-3. __Neural-networks__ - A Collection of notebooks created for learning PyTorch and Deep Learning in general.
-4. __Birth Names__ - A simple data visualization project displaying the rise and fall of popularity of child names since 1880. Written to brush up on OOP Java programming. 
+1. __textbook__ - A set of Jupyter Notebooks containing detailed and organized notes on Machine Learning and Statistics, written as I learn. 
+2. __linear_algebra__ - PCA and other basic linear algebra practice
+3. __decision_trees__ - A from scratch decision tree class for regression.  
+3. __neural_networks__ - A Collection of modules and notebooks created for learning neural networks, primarily using PyTorch.
+
