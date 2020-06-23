@@ -39,10 +39,10 @@ class LSequential(nn.Sequential):
         o_name = out[0]
 
         for i in range(n_layers - 2):
-            modules[f'fc{i}'] = nn.Linear(layers[i], layers[i + 1])
+            modules[f'fc{i}'] = nn.Linear(arch[i], arch[i + 1])
             modules[f'{a_name}{i}'] = activation[1]
             modules[f'drop{i}'] = nn.Dropout(p=dropout)
-        modules['fc_out'] = nn.Linear(layers[-2], layers[-1])
+        modules['fc_out'] = nn.Linear(arch[-2], arch[-1])
         modules[f'{o_name}'] = out[1]
 
         return modules
@@ -124,7 +124,7 @@ if __name__ == '__main__':
 
     layers = (784, 256, 128, 64, 10)
     model = LSequential(layers)
-    model.train_model(trainloader, 15, testload=testloader)
+    model.train_model(trainloader, 1, testload=testloader)
     model.plot_loss()
     print(model)
     model.save('test_save.pth')
