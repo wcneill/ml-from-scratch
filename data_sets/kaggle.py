@@ -4,7 +4,9 @@ import pandas as pd
 
 
 class MNIST(Dataset):
-    """ Kaggle's MNIST dataset. """
+    """ Kaggle's MNIST dataset. Kaggle formats each image as a single row vector of pixels. This custom extension of
+     the PyTorch `Dataset` class will allow the data to be split into training and validation sets by
+      `torch.utils.random_split` and loaded into a PyTorch DataLoader."""
     def __init__(self, csv_file, transform=None):
         """
         Args:
@@ -26,4 +28,4 @@ class MNIST(Dataset):
         if self.transform:
             image = self.transform(image)
 
-        return {'image': image, 'label': label}
+        return image, label
