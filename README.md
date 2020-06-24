@@ -8,4 +8,4 @@ The repository is roughly organized as follows:
 1. __linear_algebra__ - From scratch PCA module and other basic linear algebra practice. 
 2. __decision_trees__ - A from scratch decision tree classifier for regression. 
 3. __neural_networks__ - A collection of modules and notebooks created for extending PyTorch functionality. 
-
+4. __data_sets__ - Custom extensions of PyTorch's `torch.utils.data.Datasets`, i.e for when a Kaggle dataset is formatted differently from PyTorch's own version of the same dataset.
