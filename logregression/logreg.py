@@ -27,19 +27,18 @@ class BinaryLogisticRegression:
 
     def infer(self, x):
         """
-        Run logistic regression on input vector. 
+        Run logistic regression on input vector. Outputs probabilities, not class predictions.
+        
         :param x: A numpy array representing the values of the independent variables.
         :return: Probability of dependent class being equal to the positive case.
         """
-        # print("In inference step")
-        # print(f"Output (y_hat) Shape: {self.sigmoid(np.dot(x, self.weights) + self.bias).shape}")
-        # print("")
         return self.sigmoid(np.dot(x, self.weights) + self.bias)
 
     def train(self, X, y, epochs, lr=1e-4, print_every=5):
         """
+        Train this class instances weights based on training data X and y.
 
-        :param X: Independent variables, one sample per row.
+        :param X: Independent variables, one sample per row. X should be 2 dimensions.
         :param y: Binary target variable, one sample per row.
         :param epochs: Number of times the model will see the data
         :param lr: Learning rate.
