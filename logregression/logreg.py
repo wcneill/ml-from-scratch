@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 class BinaryLogisticRegression:
     """
-    Logistic regression class from scratch.
+    Binary Logistic regression class from scratch.
     """
     def __init__(self, n):
         """
@@ -27,9 +27,9 @@ class BinaryLogisticRegression:
 
     def infer(self, x):
         """
-        Run logistic regression on input vector.
-        :param x: A numpy array
-        :return:
+        Run logistic regression on input vector. 
+        :param x: A numpy array representing the values of the independent variables.
+        :return: Probability of dependent class being equal to the positive case.
         """
         # print("In inference step")
         # print(f"Output (y_hat) Shape: {self.sigmoid(np.dot(x, self.weights) + self.bias).shape}")
@@ -44,7 +44,7 @@ class BinaryLogisticRegression:
         :param epochs: Number of times the model will see the data
         :param lr: Learning rate.
         :param print_every: How often to print loss stats.
-        :return:
+        :return: Returns an array containing the average loss for each epoch. 
         """
 
         loss = []
@@ -76,14 +76,14 @@ class BinaryLogisticRegression:
         :param p: The true probability q(X=1). Since the classification is binary
             this should value should only be 0 or 1.
         :param q: The model's estimated probability of q(X=1).
-        :return: Single sample cross entropy of q with respect to p.
+        :return: Cross entropy of distribution q with respect to distribution p. 
         """
-        epsilon = 1e-15
+        epsilon = 1e-15 # to avoid divide by zero errors.
         return -p * np.log(q + epsilon) - (1 - p) * np.log(1 - q + epsilon)
 
     def _step(self, y, y_hat, X, lr):
         """
-        Back propagation.
+        Back propagation step.
         """
 
         delta_y = (y_hat - y).squeeze()
