@@ -12,9 +12,12 @@ import matplotlib.pyplot as plt
 
 
 class BinaryLogisticRegression:
+    """
+    Logistic regression class from scratch.
+    """
     def __init__(self, n):
         """
-        Initializes a logistic regression class object
+        Initializes a logistic regression class object with ``n`` weights.
 
         :param n: The number of weights to initialize.
         """
@@ -79,6 +82,9 @@ class BinaryLogisticRegression:
         return -p * np.log(q + epsilon) - (1 - p) * np.log(1 - q + epsilon)
 
     def _step(self, y, y_hat, X, lr):
+        """
+        Back propagation.
+        """
 
         delta_y = (y_hat - y).squeeze()
         dLdw = (X.T * delta_y).T.mean(axis=0)
